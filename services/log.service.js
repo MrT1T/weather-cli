@@ -17,3 +17,14 @@ export const printHelp = () => {
     -t [API_KEY] to set token
     `);
 }
+
+export const printWeather = (res, icon) => {
+    console.log(`
+    ${chalk.bgYellow.white(` WEATHER in ${res.name} :`)} 
+        ${icon}  ${res.weather[0].description}
+        Temperature: ${res.main.temp}°C, 
+        Feels like: ${res.main.feels_like}°C,
+        Humidity: ${res.main.humidity}%,
+        Wind speed: ${res.wind.speed} m/s
+    `);
+}

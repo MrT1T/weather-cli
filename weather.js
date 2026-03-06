@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import { getArgs } from "./helpers/args.js";
-import { printHelp,printSuccess, printError } from "./services/log.service.js";
-import { saveKeyValue, TOKEN_DICTIONARY } from "./services/storage.service.js";
+import { printHelp,printSuccess, printError, printWeather } from "./services/log.service.js";
+import { saveKeyValue, TOKEN_DICTIONARY, getKeyValue } from "./services/storage.service.js";
 import { getWeather } from "./services/api.service.js";
 
 const saveToken = async (token) => {
@@ -18,10 +18,47 @@ const saveToken = async (token) => {
     }
 }
 
-const getForecast = async (city) => {
+const saveCity = async (city) => {
+    if (!city.length) {
+        printError("City not provided");
+        return;
+    }
     try {
+        await saveKeyValue(TOKEN_DICTIONARY.city, city);
+        printSuccess("City saved successfully");
+    } catch (e) {
+        printError("Failed to save city", e.message);
+    }
+}
+
+const getIcon = (icon) => {
+    switch (icon.slice(0, -1)) {
+        case "01":
+            return "☀️";
+        case "02":
+            return "⛅";
+        case "03":
+            return "☁️";
+        case "04":
+            return "☁️";
+        case "09":
+            return "🌧️";
+        case "10":
+            return "🌦️";
+        case "11":
+            return "🌩️";
+        case "13":
+            return "❄️";
+        case "50":
+            return "🌫️";
+    }
+}
+
+const getForecast = async () => {
+    try {
+        const city = process.env.CITY ?? await getKeyValue(TOKEN_DICTIONARY.city);
         const data = await getWeather(city);
-        printSuccess(`Weather in ${data.name}: ${data.main.temp}°C, ${data.weather[0].description}`);
+        printWeather(data, getIcon(data.weather[0].icon));
     } catch (e) {
         console.log(e);
         if (e?.cod == 404) {
@@ -38,16 +75,17 @@ const initCLI = async () => {
     const args = getArgs();
 
     if (args.h) {
-        printHelp();
+      return printHelp();
     }
     if(args.s) {
-     await getForecast("Brest");
+     return saveCity(args.s);
     }
 
     if(args.t) {
      return saveToken(args.t);
     }
-     await getForecast("Brest");
+
+     await getForecast();
 }
 
 initCLI();
