@@ -8,15 +8,21 @@
   ],
   "license": "ISC",
   "author": "mrFint",
-  "type": "commonjs",
-  "main": "index.js",
+  "type": "module",
+  "main": "weather.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node weather.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/MrT1T/weather-cli"
   },
-  "bin": "./index.js"
+  "bin": {
+    "weather": "./weather.js"
+  },
+  "dependencies": {
+    "axios": "^1.13.6",
+    "chalk": "^5.6.2"
+  }
 }
