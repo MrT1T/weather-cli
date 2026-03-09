@@ -1,7 +1,10 @@
 {
-  "name": "@weather/cli",
+  "name": "history-weather-cli",
   "version": "1.0.0",
   "description": "CLI for getting weather",
+  "publishConfig": {
+    "access": "public"
+  }, 
   "keywords": [
     "cli",
     "weather"
